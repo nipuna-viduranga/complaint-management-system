@@ -1,0 +1,131 @@
+@{
+    ViewData["Title"] = "Analytics Dashboard";
+    var statusStats = ViewBag.StatusStats as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var categoryStats = ViewBag.CategoryStats as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+}
+
+<div class="animate-fade-in">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h1 class="display-4 mb-0 text-white">System <span style="color:var(--primary)">Analytics</span></h1>
+            <p class="text-secondary fs-5 mb-0">Real-time health monitoring and complaint distribution.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge-modern badge-resolved mb-2 d-inline-block">Live Feed</span>
+            <p class="small text-muted mb-0">Last updated: @DateTime.Now.ToString("HH:mm:ss")</p>
+        </div>
+    </div>
+
+    <!-- Bento Grid Metrics -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="glass-card metric-card h-100">
+                <p class="text-secondary small text-uppercase fw-bold mb-2">Total Complaints</p>
+                <div class="metric-value">@totalCount</div>
+                <div class="progress mt-3 bg-dark bg-opacity-50" style="height: 4px;">
+                    <div class="progress-bar" style="width: 100%; background: var(--primary)"></div>
+                </div>
+            </div>
+        </div>
+        @foreach (var status in statusStats.Take(3))
+        {
+            <div class="col-md-3">
+                <div class="glass-card metric-card h-100">
+                    <p class="text-secondary small text-uppercase fw-bold mb-2">@status.Key</p>
+                    <div class="metric-value">@status.Value</div>
+                    <div class="progress mt-3 bg-dark bg-opacity-50" style="height: 4px;">
+                        <div class="progress-bar" style="width: @(totalCount > 0 ? (status.Value * 100 / totalCount) : 0)%; background: var(--secondary)"></div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-card h-100">
+                <h3 class="h5 mb-4 text-white">Complaint Distribution by Status</h3>
+                <div style="height: 350px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass-card h-100">
+                <h3 class="h5 mb-4 text-white">Top Categories</h3>
+                <ul class="list-unstyled mb-0">
+                    @foreach (var cat in categoryStats.OrderByDescending(x => x.Value).Take(5))
+                    {
+                        <li class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">@cat.Key</span>
+                                <span class="text-white small fw-bold">@cat.Value</span>
+                            </div>
+                            <div class="progress bg-dark bg-opacity-50" style="height: 6px;">
+                                <div class="progress-bar rounded-pill" style="width: @(totalCount > 0 ? (cat.Value * 100 / totalCount) : 0)%; background: var(--primary)"></div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            
+            // Custom Gradient
+            const purpleGradient = ctxStatus.createLinearGradient(0, 0, 0, 400);
+            purpleGradient.addColorStop(0, 'rgba(99, 102, 241, 0.5)');
+            purpleGradient.addColorStop(1, 'rgba(99, 102, 241, 0.05)');
+
+            const labels = @Html.Raw(Json.Serialize(statusStats.Keys));
+            const data = @Html.Raw(Json.Serialize(statusStats.Values));
+
+            new Chart(ctxStatus, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Count',
+                        data: data,
+                        borderColor: '#6366f1',
+                        backgroundColor: purpleGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

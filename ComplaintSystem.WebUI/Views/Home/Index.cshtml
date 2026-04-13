@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="row align-items-center py-5">
+    <div class="col-lg-6 mb-5 mb-lg-0">
+        <h1 class="display-3 fw-bold mb-4" style="font-family: 'Outfit', sans-serif;">
+            Resolution, <br /><span style="color:var(--primary)">Simplified.</span>
+        </h1>
+        <p class="fs-5 text-muted mb-5">
+            Our Digital Complaint Management System ensures your concerns are heard, tracked, and resolved with total transparency and speed.
+        </p>
+        <div class="d-flex gap-3">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Complaints" asp-action="Create" class="btn btn-primary btn-lg px-5">File a Complaint</a>
+                <a asp-controller="Complaints" asp-action="Index" class="btn btn-outline-secondary btn-lg px-5">My Dashboard</a>
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary btn-lg px-5">Get Started</a>
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-secondary btn-lg px-5">Sign In</a>
+            }
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="position-relative">
+            <div class="glass-card p-4 mx-auto" style="max-width: 450px; transform: rotate(-2deg);">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0">Complaint Resolved</h6>
+                        <small class="text-muted">Just now</small>
+                    </div>
+                </div>
+                <p class="mb-0 text-muted small">The technical support team has fixed your internet connectivity issue. Please confirm if resolved.</p>
+            </div>
+            
+            <div class="glass-card p-4 position-absolute top-50 start-50 translate-middle" style="width: 250px; margin-top: 80px; margin-left: 80px; transform: rotate(5deg);">
+                 <div class="text-center">
+                    <h3 class="fw-bold text-primary mb-0">98%</h3>
+                    <small class="text-muted">Resolution Rate</small>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 pt-5 text-center">
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 h-100">
+            <div class="fs-1 mb-3">⚡</div>
+            <h5 class="fw-bold">Fast Routing</h5>
+            <p class="text-muted">Complaints are automatically routed to the right department using smart logic.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 h-100">
+            <div class="fs-1 mb-3">📈</div>
+            <h5 class="fw-bold">Real-time Analytics</h5>
+            <p class="text-muted">Staff can monitor trends and performance metrics through an interactive dashboard.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 h-100">
+            <div class="fs-1 mb-3">💬</div>
+            <h5 class="fw-bold">Direct Dialogue</h5>
+            <p class="text-muted">Chat directly with the staff members handling your ticket for clear communication.</p>
+        </div>
+    </div>
+</div>
